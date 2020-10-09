@@ -45,8 +45,10 @@ eip = b"BBBB" #
 
 #### 9. Find Bad Characters with mona
 - Set working dir:
+
 `!mona config -set workingfolder C:\Windows\Temp`
 - Create bytearray (without bad chars we know about)
+
 `!mona bytearray --cpb "\x00"` 
 - Include list chars in payload (without \x00)
 ```
@@ -54,6 +56,7 @@ badchars = [0x00] # start with null
 ```
 - Repro crash with charpayload
 - After the crash use mona to find the next bad char:
+
 `!mona compare -f C:\Windows\Temp\bytearray.bin -a esp`
 - Note new bad char, add it to "badchars"
 - Repeat steps until no new bad chars are reported
